@@ -1,3 +1,4 @@
+/* global location, chrome, crypto, DOMParser, i18nReplace, i18nReplaceImpl */
 // Copyright (c) 2012 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -171,7 +172,7 @@ function createFrame(frame_id, html) {
           'content="object-src \'none\'">' :
       '<meta http-equiv="content-security-policy" ' +
           'content="object-src \'none\'; script-src \'self\'">';
-  frame = document.createElement('iframe');
+  var frame = document.createElement('iframe');
   frame.id = frame_id;
   frame.src = "data:text/html;charset=utf-8,<html>" + csp +
               "<!--Token:" + extension_id + token +
@@ -210,7 +211,7 @@ function handleResponse() {
     entries = doc.getElementsByTagName('item');
   if (entries.length == 0) {
     handleFeedParsingFailed(
-        chrome.i18n.getMessage("rss_subscription_no_entries"))
+        chrome.i18n.getMessage("rss_subscription_no_entries"));
     return;
   }
 
@@ -224,7 +225,7 @@ function handleResponse() {
   // Embed the iframe.
   var itemsTag = document.getElementById('items');
   // TODO(aa): Add base URL tag
-  iframe = createFrame('rss', styleSheet + frameScript);
+  var iframe = createFrame('rss', styleSheet + frameScript);
   itemsTag.appendChild(iframe);
 }
 

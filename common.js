@@ -1,3 +1,4 @@
+/* global chrome */
 // Copyright (c) 2010 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -24,7 +25,7 @@ function defaultReaderList() {
 * Check to see if the current item is set as default reader.
 */
 function isDefaultReader(url) {
-  defaultReader = window.localStorage.defaultReader ?
+  var defaultReader = window.localStorage.defaultReader ?
                       window.localStorage.defaultReader : "";
   return url == defaultReader;
 }

@@ -1,3 +1,4 @@
+/* global MessageChannel, DOMParser */
 /* Copyright (c) 2009 The Chromium Authors. All rights reserved.
    Use of this source code is governed by a BSD-style license that can be
    found in the LICENSE file.
@@ -60,8 +61,9 @@ function buildPreview(doc) {
   if (entries.length == 0)
     entries = doc.getElementsByTagName('item');
 
+  var i;
   for (i = 0; i < entries.length && i < maxFeedItems; ++i) {
-    item = entries.item(i);
+    var item = entries.item(i);
 
     /* Grab the title for the feed item. */
     var itemTitle = item.getElementsByTagName('title')[0];
