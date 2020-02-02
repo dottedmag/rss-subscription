@@ -1,4 +1,4 @@
-/* global location, chrome, crypto, DOMParser, i18nReplace, i18nReplaceImpl */
+/* global location, chrome, crypto, DOMParser */
 // Copyright (c) 2012 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -34,9 +34,6 @@ var styleSheet = "";
 // will either be a link to the js file within the extension or contain the
 // contents of the style sheet, fetched through XmlHttpRequest.
 var frameScript = "";
-
-// What to show when we cannot parse the feed name.
-var unknownName = chrome.i18n.getMessage("rss_subscription_unknown_feed_name");
 
 // The token to use during communications with the iframe.
 var token = "";
@@ -95,19 +92,17 @@ function main() {
 // Sets the title for the feed.
 function setFeedTitle(title) {
   var titleTag = document.getElementById('title');
-  titleTag.textContent =
-      chrome.i18n.getMessage("rss_subscription_feed_for", title);
+  titleTag.textContent = "Feed for "+title;
 }
 
 // Handles errors during the XMLHttpRequest.
 function handleError() {
-  handleFeedParsingFailed(
-      chrome.i18n.getMessage("rss_subscription_error_fetching"));
+  handleFeedParsingFailed("Error fetching feed.");
 }
 
 // Handles feed parsing errors.
 function handleFeedParsingFailed(error) {
-  setFeedTitle(unknownName);
+  setFeedTitle("Unknown feed name");
 
   // The tests always expect an IFRAME, so add one showing the error.
   var html = "<body><span id=\"error\" class=\"item_desc\">" + error +
@@ -153,8 +148,7 @@ function handleResponse() {
     var domParser = new DOMParser();
     doc = domParser.parseFromString(req.responseText, "text/xml");
     if (!doc) {
-      handleFeedParsingFailed(
-          chrome.i18n.getMessage("rss_subscription_not_valid_feed"));
+      handleFeedParsingFailed("Not a valid feed.");
       return;
     }
   }
@@ -164,8 +158,7 @@ function handleResponse() {
   if (entries.length == 0)
     entries = doc.getElementsByTagName('item');
   if (entries.length == 0) {
-    handleFeedParsingFailed(
-        chrome.i18n.getMessage("rss_subscription_no_entries"));
+    handleFeedParsingFailed("This feed contains no entries.");
     return;
   }
 
@@ -174,7 +167,7 @@ function handleResponse() {
   if (title)
     setFeedTitle(title.textContent);
   else
-    setFeedTitle(unknownName);
+    setFeedTitle("Unknown feed name");
 
   // Embed the iframe.
   var itemsTag = document.getElementById('items');
@@ -183,16 +176,7 @@ function handleResponse() {
   itemsTag.appendChild(iframe);
 }
 
-document.addEventListener('DOMContentLoaded', function () {
-  document.title =
-      chrome.i18n.getMessage("rss_subscription_default_title");
-  i18nReplace('rss_subscription_subscribe_using');
-  i18nReplace('rss_subscription_subscribe_button');
-  i18nReplace('rss_subscription_always_use');
-  i18nReplace('rss_subscription_feed_preview');
-
-  main();
-});
+document.addEventListener('DOMContentLoaded', main);
 
 window.addEventListener("message", function(e) {
   if (e.ports[0] && e.data === token)

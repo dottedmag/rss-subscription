@@ -28,7 +28,7 @@ chrome.extension.onMessage.addListener(function(request, sender) {
       // Enable the page action icon.
       chrome.pageAction.setTitle(
         { tabId: sender.tab.id,
-          title: chrome.i18n.getMessage("rss_subscription_action_title")
+          title: "Click to subscribe..."
         });
       chrome.pageAction.show(sender.tab.id);
     });

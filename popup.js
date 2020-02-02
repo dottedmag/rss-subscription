@@ -21,8 +21,7 @@ function main() {
       } else {
         var content = document.getElementById('content');
         var heading = document.getElementById('heading');
-        heading.innerText =
-            chrome.i18n.getMessage("rss_subscription_action_title");
+        heading.innerText = "Click to subscribe...";
         content.appendChild(document.createElement('br'));
 
         var feed_list = document.createElement('table');

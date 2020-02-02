@@ -11,20 +11,18 @@
       "js": [ "sniff_common.js", "feed_finder.js" ],
       "matches": [ "http://*/*", "https://*/*" ]
    } ],
-   "default_locale": "en",
-   "description": "__MSG_rss_subscription_description__",
+   "description": "Adds one-click subscription to your toolbar.",
    "icons": {
       "128": "feed-icon-128x128.png"
    },
    "manifest_version": 2,
-   "name": "__MSG_rss_subscription_name__",
+   "name": "RSS Subscription Extension (by dottedmag)",
    "page_action": {
       "default_icon": "feed-icon-16x16.png",
       "default_popup": "popup.html",
-      "default_title": "__MSG_rss_subscription_default_title__"
+      "default_title": "Subscribe to this feed"
    },
    "permissions": [ "tabs", "http://*/*", "https://*/*", "storage" ],
-   "update_url": "https://clients2.google.com/service/update2/crx",
-   "version": "2.2.4",
+   "version": "2.2.5",
    "web_accessible_resources": [ "iframe.js", "style.css" ]
 }
