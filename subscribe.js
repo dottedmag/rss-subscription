@@ -38,60 +38,14 @@ var frameScript = "";
 // What to show when we cannot parse the feed name.
 var unknownName = chrome.i18n.getMessage("rss_subscription_unknown_feed_name");
 
-// A list of feed readers, populated by localStorage if available, otherwise
-// hard coded.
-var feedReaderList;
-
 // The token to use during communications with the iframe.
 var token = "";
-
-// Navigates to the reader of the user's choice (for subscribing to the feed).
-function navigate() {
-  var select = document.getElementById('readerDropdown');
-  var url =
-      feedReaderList[select.selectedIndex].url.replace(
-          "%s", encodeURIComponent(feedUrl));
-
-  // Before we navigate, see if we want to skip this step in the future...
-  if (storageEnabled) {
-    // See if the user wants to always use this reader.
-    var alwaysUse = document.getElementById('alwaysUse');
-    if (alwaysUse.checked) {
-      window.localStorage.defaultReader =
-          feedReaderList[select.selectedIndex].url;
-      window.localStorage.showPreviewPage = "No";
-    }
-  }
-
-  document.location = url;
-}
 
 /**
 * The main function. Sets up the selection list for possible readers and
 * fetches the data.
 */
 function main() {
-  if (storageEnabled && window.localStorage.readerList)
-      feedReaderList = JSON.parse(window.localStorage.readerList);
-  if (!feedReaderList)
-    feedReaderList = defaultReaderList();
-
-  // Populate the list of readers.
-  var readerDropdown = document.getElementById('readerDropdown');
-  for (i = 0; i < feedReaderList.length; ++i) {
-    readerDropdown.options[i] = new Option(feedReaderList[i].description, i);
-    if (storageEnabled && isDefaultReader(feedReaderList[i].url))
-      readerDropdown.selectedIndex = i;
-  }
-
-  if (storageEnabled) {
-    // Add the "Manage..." entry to the dropdown and show the checkbox asking
-    // if we always want to use this reader in the future (skip the preview).
-    readerDropdown.options[i] =
-        new Option(chrome.i18n.getMessage("rss_subscription_manage_label"), "");
-    document.getElementById('alwaysUseSpan').style.display = "block";
-  }
-
   // Set the token.
   var tokenArray  = new Uint32Array(4);
   crypto.getRandomValues(tokenArray);
@@ -135,7 +89,7 @@ function main() {
   req.overrideMimeType('text/xml');
   req.send(null);
 
-  document.getElementById('feedUrl').href = 'view-source:' + feedUrl;
+  document.getElementById('feedUrl').textContent = feedUrl;
 }
 
 // Sets the title for the feed.
@@ -229,20 +183,6 @@ function handleResponse() {
   itemsTag.appendChild(iframe);
 }
 
-/**
-* Handler for when selection changes.
-*/
-function onSelectChanged() {
-  if (!storageEnabled)
-    return;
-  var readerDropdown = document.getElementById('readerDropdown');
-
-  // If the last item (Manage...) was selected we show the options.
-  var oldSelection = readerDropdown.selectedIndex;
-  if (readerDropdown.selectedIndex == readerDropdown.length - 1)
-    window.location = "options.html";
-}
-
 document.addEventListener('DOMContentLoaded', function () {
   document.title =
       chrome.i18n.getMessage("rss_subscription_default_title");
@@ -250,12 +190,6 @@ document.addEventListener('DOMContentLoaded', function () {
   i18nReplace('rss_subscription_subscribe_button');
   i18nReplace('rss_subscription_always_use');
   i18nReplace('rss_subscription_feed_preview');
-  i18nReplaceImpl('feedUrl', 'rss_subscription_feed_link', '');
-
-  var dropdown = document.getElementById('readerDropdown');
-  dropdown.addEventListener('change', onSelectChanged);
-  var button = document.getElementById('rss_subscription_subscribe_button');
-  button.addEventListener('click', navigate);
 
   main();
 });

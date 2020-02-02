@@ -27,10 +27,6 @@ iframe {
   display: block;
 }
 
-.feedUrlSpan {
-  float: right;
-}
-
-.feedUrl {
-  font-size: 8pt;
+#feedUrl {
+  font-family: monospace;
 }
